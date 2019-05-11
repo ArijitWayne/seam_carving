@@ -31,8 +31,8 @@ int main()
 
   Mat original_image;
   Mat im_gray;
-  original_image = imread("landscape.jpg", 1 );
-  im_gray = imread("landscape.jpg", 0 );
+  original_image = imread("landscape.jpg", 1 ); //Reading the original image
+  im_gray = imread("landscape.jpg", 0 ); //Reading the image in greyscale
 
   if( argc == 2 || !original_image.data )
     {
@@ -40,6 +40,7 @@ int main()
       return -1;
     }
 
+//Storing the rows and columns of the greyscale image
   m=im_gray.rows;
   n=im_gray.cols;
 
@@ -52,7 +53,9 @@ int main()
   waitKey(0);
   return 0;
 }
-
+/*Sobel function used to convert the pixels of the images
+into energies
+*/
 float sobel(int i, int j, const Mat &im)
 {
   int pos_j=std::max(j-1,0);
@@ -64,7 +67,7 @@ float sobel(int i, int j, const Mat &im)
   return abs(ix) + abs(iy);
 }
 
-
+// This function has been used to find the seams by tracing low energy pixels
 
 void find_seam(int arr[], const Mat &im,char *q)
 {
@@ -146,6 +149,8 @@ MinArgmin getMinArgmin(const float* arr, const int length)
   return {min, argmin};
 }
 
+/*Both the greyscale and the original images are being converted
+  to the desired image format using the function seam_carving */
 Mat seam_carving(const Mat &imcol, Mat &imgray, int m_new, int n_new)
 {
   Mat result=imcol.clone();
@@ -173,7 +178,8 @@ Mat seam_carving(const Mat &imcol, Mat &imgray, int m_new, int n_new)
   result=result.t();
   return result;
 }
-
+/*Seams are deleted from right to left by replacing
+  the low energy pixels with their high energy neighbors*/
 twoMat delete_seam(const int *arr, const Mat &imgray, const Mat &im_col)
 {
   if(imgray.cols!=im_col.cols || imgray.rows!=im_col.rows)
